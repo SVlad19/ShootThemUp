@@ -1,0 +1,64 @@
+// Shoot Them Up Game. All Rights Reserved.
+
+#pragma once
+
+#include "Components/ActorComponent.h"
+#include "CoreMinimal.h"
+#include "STUHealthComponent.generated.h"
+
+DECLARE_MULTICAST_DELEGATE(FOnDeath);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
+
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
+{
+    GENERATED_BODY()
+
+  public:
+    USTUHealthComponent();
+
+    float GetHealth() const
+    {
+        return Health;
+    }
+
+    UFUNCTION()
+    void OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
+                               class AController *InstigatedBy, AActor *DamageCauser);
+
+    UFUNCTION(BlueprintCallable)
+    bool IsDead() const
+    {
+        return FMath::IsNearlyZero(Health);
+    }
+
+    FOnDeath OnDeath;
+    FOnHealthChanged OnHealthChanged;
+
+  protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+    float MaxHealth = 100.f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    bool AutoHeal = true;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
+    float HealUpdateTime = 0.3f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
+    float HealDelay = 3.f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
+    float HealModifier = 1.f;
+
+    virtual void BeginPlay() override;
+
+  private:
+    UFUNCTION()
+    void HealUpdate();
+
+    float Health = 0.f;
+    FTimerHandle HealTimer;
+
+    void SetHealth(float NewHealth);
+};
