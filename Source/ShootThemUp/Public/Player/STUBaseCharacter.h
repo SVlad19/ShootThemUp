@@ -12,6 +12,7 @@ class UInputDataConfig;
 class USpringArmComponent;
 class USTUHealthComponent;
 class UTextRenderComponent;
+class USTUWeaponComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
@@ -47,34 +48,36 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     void Sprint(const FInputActionValue &Value);
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UCameraComponent *CameraComponent;
+    TObjectPtr<UCameraComponent> CameraComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    USTUHealthComponent *HealthComponent;
+    TObjectPtr<USTUHealthComponent> HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent *HealthTextComponent;
+    TObjectPtr<USTUWeaponComponent> WeaponComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    USpringArmComponent *SpringArmComponent;
+    TObjectPtr<UTextRenderComponent> HealthTextComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    TObjectPtr<USpringArmComponent> SpringArmComponent;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
-    UInputMappingContext *InputMapping;
+    TObjectPtr<UInputMappingContext> InputMapping;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
-    UInputDataConfig *InputActions;
+    TObjectPtr<UInputDataConfig> InputActions;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage *DeathAnimMontage;
+    TObjectPtr<UAnimMontage> DeathAnimMontage;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
-    FVector2D LandedDamageVelocity = FVector2D(900.f,1200.f);
+    FVector2D LandedDamageVelocity = FVector2D(900.f, 1200.f);
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     FVector2D LandedDamage = FVector2D(10.f, 100.f);
 
   private:
-
     void OnDeath();
     void OnHealthChanged(float Health);
     UFUNCTION()

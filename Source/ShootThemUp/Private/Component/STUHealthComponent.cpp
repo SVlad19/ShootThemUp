@@ -3,8 +3,6 @@
 #include "Component/STUHealthComponent.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
-// #include "Dev/STUFireDamageType.h"
-// #include "Dev/STUIceDamageType.h"
 
 USTUHealthComponent::USTUHealthComponent()
 {
@@ -16,6 +14,7 @@ void USTUHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    check(MaxHealth > 0);
     SetHealth(MaxHealth);
 
     AActor *ComponentOwner = GetOwner();

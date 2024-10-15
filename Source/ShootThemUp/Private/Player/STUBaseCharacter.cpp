@@ -3,16 +3,18 @@
 #include "Player/STUBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Component/STUCharacterMovementComponent.h"
+#include "Component/STUHealthComponent.h"
+#include "Component/STUWeaponComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "Config/InputDataConfig.h"
+#include "Engine/DamageEvents.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/STUPlayerController.h"
-#include "Component/STUHealthComponent.h"
-#include "Components/TextRenderComponent.h"
-#include "Engine/DamageEvents.h"
-#include "GameFramework/Controller.h"
+#include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -30,9 +32,11 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
     CameraComponent->SetupAttachment(SpringArmComponent);
 
     HealthComponent = CreateDefaultSubobject<USTUHealthComponent>("HealthComponent");
-    
+
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
+
+    WeaponComponent = CreateDefaultSubobject<USTUWeaponComponent>("WeaponComponent");
 }
 
 void ASTUBaseCharacter::BeginPlay()
@@ -121,7 +125,6 @@ float ASTUBaseCharacter::GetMovementDirection() const
 void ASTUBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
 }
 
 void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -139,16 +142,22 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
         Input->BindAction(InputActions->LookInput, ETriggerEvent::Triggered, this, &ASTUBaseCharacter::Look);
         Input->BindAction(InputActions->JumpInput, ETriggerEvent::Triggered, this, &ASTUBaseCharacter::Jumping);
         Input->BindAction(InputActions->SprintInput, ETriggerEvent::Triggered, this, &ASTUBaseCharacter::Sprint);
+        Input->BindAction(InputActions->FireInput, ETriggerEvent::Triggered, WeaponComponent.Get(),
+                          &USTUWeaponComponent::Fire); 
+        Input->BindAction(InputActions->SwapInput, ETriggerEvent::Triggered, WeaponComponent.Get(),
+                          &USTUWeaponComponent::SwapWeapon);
+        Input->BindAction(InputActions->ReloadInput, ETriggerEvent::Triggered, WeaponComponent.Get(),
+                          &USTUWeaponComponent::Reload); 
     }
 }
 
 void ASTUBaseCharacter::OnDeath()
 {
     UE_LOG(BaseCharacterLog, Display, TEXT("Character is dead : %s"), *GetName());
-    
-    PlayAnimMontage(DeathAnimMontage);
 
+    PlayAnimMontage(DeathAnimMontage);
     GetCharacterMovement()->DisableMovement();
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
     SetLifeSpan(5.f);
 
@@ -156,6 +165,7 @@ void ASTUBaseCharacter::OnDeath()
     {
         Controller->ChangeState(NAME_Spectating);
     }
+    WeaponComponent->StopFire();
 }
 
 void ASTUBaseCharacter::OnHealthChanged(float Health)
@@ -175,4 +185,3 @@ void ASTUBaseCharacter::OnGroundLanded(const FHitResult &Hit)
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
-

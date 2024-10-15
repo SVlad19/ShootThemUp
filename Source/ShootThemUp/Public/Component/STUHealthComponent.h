@@ -4,10 +4,8 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "STUCoreTypes.h"
 #include "STUHealthComponent.generated.h"
-
-DECLARE_MULTICAST_DELEGATE(FOnDeath);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
@@ -26,10 +24,16 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
     void OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
                                class AController *InstigatedBy, AActor *DamageCauser);
 
-    UFUNCTION(BlueprintCallable)
-    bool IsDead() const
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    FORCEINLINE bool IsDead() const
     {
         return FMath::IsNearlyZero(Health);
+    }
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    FORCEINLINE float GetHealthPercent() const
+    {
+        return (Health / MaxHealth);
     }
 
     FOnDeath OnDeath;
