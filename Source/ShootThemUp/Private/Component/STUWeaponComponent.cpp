@@ -1,9 +1,9 @@
 // Shoot Them Up Game. All Rights Reserved.
 
 #include "Component/STUWeaponComponent.h"
+#include "Animations/AnimUtils.h"
 #include "Animations/STUEquipFinishedAnimNotify.h"
 #include "Animations/STUReloadFinishedAnimNotify.h"
-#include "Animations/AnimUtils.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 
@@ -59,6 +59,28 @@ void USTUWeaponComponent::SwapWeapon(const FInputActionValue &Value)
 void USTUWeaponComponent::Reload(const FInputActionValue &Value)
 {
     ChangeClip();
+}
+
+bool USTUWeaponComponent::GetWeaponUIData(FWeaponUIData& UIData)const
+{
+    if (CurrentWeapon)
+    {
+        UIData = CurrentWeapon->GetUIData();
+        return true;
+    }
+
+    return false;
+}
+
+bool USTUWeaponComponent::GetWeaponAmmoData(FAmmoData &AmmoData) const
+{
+    if (CurrentWeapon)
+    {
+        AmmoData = CurrentWeapon->GetAmmoData();
+        return true;
+    }
+
+    return false;
 }
 
 void USTUWeaponComponent::BeginPlay()
@@ -184,7 +206,7 @@ void USTUWeaponComponent::InitAnimations()
             checkNoEntry();
         }
 
-         ReloadFinishedNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);     
+        ReloadFinishedNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
     }
 }
 

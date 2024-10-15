@@ -7,7 +7,7 @@
 
 void ASTUGameHUD::DrawHUD()
 {
-    DrawCrossHair();
+   // DrawCrossHair();
 }
 
 void ASTUGameHUD::BeginPlay()

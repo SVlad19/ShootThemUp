@@ -1,19 +1,14 @@
 // Shoot Them Up Game. All Rights Reserved.
 
-
 #include "UI/STUPlayerHUDWidget.h"
 #include "Component/STUHealthComponent.h"
+#include "Component/STUWeaponComponent.h"
+#include "STUUtils.h"
 
 float USTUPlayerHUDWidget::GetHealthPercent() const
 {
-    const auto Player = GetOwningPlayerPawn();
 
-    if (!Player)
-    {
-        return 0.f;
-    }
-
-    const auto HealthComponent = Player->GetComponentByClass<USTUHealthComponent>();
+    const auto HealthComponent = STUUtils::GetSTUPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
 
     if (!HealthComponent)
     {
@@ -22,4 +17,43 @@ float USTUPlayerHUDWidget::GetHealthPercent() const
     }
 
     return HealthComponent->GetHealthPercent();
+}
+
+bool USTUPlayerHUDWidget::GetWeaponUIData(FWeaponUIData &UIData) const
+{
+    const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTUWeaponComponent>(GetOwningPlayerPawn());
+
+    if (!WeaponComponent)
+    {
+
+        return false;
+    }
+
+    return WeaponComponent->GetWeaponUIData(UIData);
+}
+
+bool USTUPlayerHUDWidget::GetWeaponAmmoData(FAmmoData &AmmoData) const
+{
+    const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTUWeaponComponent>(GetOwningPlayerPawn());
+
+    if (!WeaponComponent)
+    {
+
+        return false;
+    }
+
+    return WeaponComponent->GetWeaponAmmoData(AmmoData);
+}
+
+bool USTUPlayerHUDWidget::IsPlayerAlive() const
+{
+    const auto HealthComponent = STUUtils::GetSTUPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
+
+    return HealthComponent && !HealthComponent->IsDead();
+}
+
+bool USTUPlayerHUDWidget::IsPlayerSpectating() const
+{
+    const auto Controller = GetOwningPlayer();
+    return Controller && Controller->GetStateName() == NAME_Spectating;
 }

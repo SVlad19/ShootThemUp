@@ -7,6 +7,7 @@
 #include "STUCoreTypes.h"
 #include "STUBaseWeapon.generated.h"
 
+
 class USkeletalMeshComponent;
 
 UCLASS()
@@ -23,7 +24,17 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     void ChangeClip();
     FORCEINLINE bool CanReload() const
     {
-        return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0; 
+        return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
+    }
+
+    FORCEINLINE FWeaponUIData GetUIData() const
+    {
+        return UIData;
+    }
+
+    FORCEINLINE FAmmoData GetAmmoData() const
+    {
+        return CurrentAmmo;
     }
 
     FOnClipEmptySignature OnClipEmpty;
@@ -55,6 +66,9 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    FWeaponUIData UIData;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Socket")
     FName MuzzleSocketName = "MazzleSocket";
 
@@ -62,6 +76,5 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     float TraceDistance = 1500.f;
 
   private:
-
     FAmmoData CurrentAmmo;
 };

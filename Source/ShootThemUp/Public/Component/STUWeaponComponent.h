@@ -25,6 +25,10 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
     void SwapWeapon(const FInputActionValue &Value);
     void Reload(const FInputActionValue &Value);
 
+    bool GetWeaponUIData(FWeaponUIData &UIData) const;
+    bool GetWeaponAmmoData(FAmmoData &AmmoData) const;
+ 
+
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;
