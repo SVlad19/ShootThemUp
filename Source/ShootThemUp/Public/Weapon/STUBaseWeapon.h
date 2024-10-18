@@ -7,8 +7,9 @@
 #include "STUCoreTypes.h"
 #include "STUBaseWeapon.generated.h"
 
-
 class USkeletalMeshComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
@@ -22,6 +23,7 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     virtual void StopFire();
 
     void ChangeClip();
+
     FORCEINLINE bool CanReload() const
     {
         return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
@@ -40,15 +42,20 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     FOnClipEmptySignature OnClipEmpty;
 
   protected:
+
     virtual void BeginPlay() override;
+
     virtual void MakeShot();
     virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const;
+
     APlayerController *GetPlayerController() const;
+
     bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
     FVector GetMuzzleLocation() const;
     void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
 
     void DecreaseAmmo();
+
     FORCEINLINE bool IsAmmoEmpty() const
     {
         return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && CurrentAmmo.Bullets == 0;
@@ -60,6 +67,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 
     void LogAmmo();
 
+    UNiagaraComponent *SpawnMuzzleFX();
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     FAmmoData DefaultAmmo{15, 10, false};
 
@@ -70,10 +79,13 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     FWeaponUIData UIData;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Socket")
-    FName MuzzleSocketName = "MazzleSocket";
+    FName MuzzleSocketName = "MuzzleSocket";
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trace")
     float TraceDistance = 1500.f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    TObjectPtr<UNiagaraSystem> MuzzleFX;
 
   private:
     FAmmoData CurrentAmmo;

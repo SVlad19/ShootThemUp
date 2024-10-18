@@ -6,6 +6,8 @@
 #include "Engine/World.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 
 ASTUBaseWeapon::ASTUBaseWeapon()
@@ -16,11 +18,11 @@ ASTUBaseWeapon::ASTUBaseWeapon()
     SetRootComponent(WeaponMeshComponent);
 }
 
-void ASTUBaseWeapon::StopFire()
+void ASTUBaseWeapon::StartFire()
 {
 }
 
-void ASTUBaseWeapon::StartFire()
+void ASTUBaseWeapon::StopFire()
 {
 }
 
@@ -34,9 +36,6 @@ void ASTUBaseWeapon::BeginPlay()
     CurrentAmmo = DefaultAmmo;
 }
 
-void ASTUBaseWeapon::MakeShot()
-{ 
-}
 
 APlayerController *ASTUBaseWeapon::GetPlayerController() const
 {
@@ -68,6 +67,10 @@ FVector ASTUBaseWeapon::GetMuzzleLocation() const
     return WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 }
 
+void ASTUBaseWeapon::MakeShot()
+{
+}
+
 bool ASTUBaseWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
 {
     FVector ViewLocation;
@@ -89,8 +92,9 @@ void ASTUBaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, c
 
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(GetOwner());
+    CollisionParams.bReturnPhysicalMaterial = true;
 
-    DrawDebugLine(GetWorld(), GetMuzzleLocation(), TraceEnd, FColor::Red, false, 3.f, 0, 3.f);
+    //DrawDebugLine(GetWorld(), GetMuzzleLocation(), TraceEnd, FColor::Red, false, 3.f, 0, 3.f);
     GetWorld()->LineTraceSingleByChannel(HitResult, GetMuzzleLocation(), TraceEnd, ECollisionChannel::ECC_Visibility,
                                          CollisionParams);
 }
@@ -131,4 +135,10 @@ void ASTUBaseWeapon::LogAmmo()
     FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
     AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
     UE_LOG(LogTemp, Display, TEXT("%s"), *AmmoInfo);
+}
+
+UNiagaraComponent *ASTUBaseWeapon::SpawnMuzzleFX()
+{
+    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MuzzleSocketName, FVector::ZeroVector,
+                                                 FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
 }
