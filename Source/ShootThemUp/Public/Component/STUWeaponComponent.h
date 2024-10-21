@@ -20,14 +20,13 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
     USTUWeaponComponent();
 
     void Fire(const FInputActionValue &Value);
-    void StartFire();
-    void StopFire();
-    void SwapWeapon(const FInputActionValue &Value);
+    virtual void StartFire();
+    virtual void StopFire();
+    virtual void SwapWeapon(const FInputActionValue &Value);
     void Reload(const FInputActionValue &Value);
 
     bool GetWeaponUIData(FWeaponUIData &UIData) const;
     bool GetWeaponAmmoData(FAmmoData &AmmoData) const;
- 
 
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -42,32 +41,16 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     TObjectPtr<UAnimMontage> EquipAnimMontage;
 
-    virtual void BeginPlay() override;
-    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-  private:
-    void SpawnWeapons();
-    void AttachWeaponToSocket(TObjectPtr<ASTUBaseWeapon> Weapon, USceneComponent *SceneComponent,
-                              const FName &SocketName);
-
-    void EquipWeapon(int32 WeaponIndex);
-    void PlayAnimMontage(TObjectPtr<UAnimMontage> Animation);
-
     UPROPERTY()
     TObjectPtr<ASTUBaseWeapon> CurrentWeapon;
 
     UPROPERTY()
-    UAnimMontage *CurrentReloadAnimMontage = nullptr;
-
-    UPROPERTY()
     TArray<TObjectPtr<ASTUBaseWeapon>> Weapons;
-    int32 CurrentWeaponIndex = 0;
-    bool EquipAnimInProgress = false;
-    bool ReloadAnimInProgress = false;
 
-    void InitAnimations();
-    void OnEquipFinished(USkeletalMeshComponent *MeshComp);
-    void OnReloadFinished(USkeletalMeshComponent *MeshComp);
+    int32 CurrentWeaponIndex = 0;
+
+    virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
     FORCEINLINE bool CanFire() const
     {
@@ -77,6 +60,26 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
     {
         return !EquipAnimInProgress && !ReloadAnimInProgress;
     }
+
+    void EquipWeapon(int32 WeaponIndex);
+
+  private:
+    UPROPERTY()
+    UAnimMontage *CurrentReloadAnimMontage = nullptr;
+
+    bool EquipAnimInProgress = false;
+    bool ReloadAnimInProgress = false;
+
+    void SpawnWeapons();
+    void AttachWeaponToSocket(TObjectPtr<ASTUBaseWeapon> Weapon, USceneComponent *SceneComponent,
+                              const FName &SocketName);
+
+    void PlayAnimMontage(TObjectPtr<UAnimMontage> Animation);
+
+    void InitAnimations();
+    void OnEquipFinished(USkeletalMeshComponent *MeshComp);
+    void OnReloadFinished(USkeletalMeshComponent *MeshComp);
+
     FORCEINLINE bool CanReload() const
     {
         return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress && CurrentWeapon->CanReload();

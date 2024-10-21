@@ -6,9 +6,8 @@
 #include "Engine/World.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
-#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
-
+#include "NiagaraFunctionLibrary.h"
 
 ASTUBaseWeapon::ASTUBaseWeapon()
 {
@@ -36,7 +35,6 @@ void ASTUBaseWeapon::BeginPlay()
     CurrentAmmo = DefaultAmmo;
 }
 
-
 APlayerController *ASTUBaseWeapon::GetPlayerController() const
 {
     const auto Player = Cast<ACharacter>(GetOwner());
@@ -50,14 +48,28 @@ APlayerController *ASTUBaseWeapon::GetPlayerController() const
 
 bool ASTUBaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const
 {
-    APlayerController *Controller = GetPlayerController();
-
-    if (!Controller)
+    const auto STUCharacter = Cast<ACharacter>(GetOwner());
+    if (!STUCharacter)
     {
         return false;
     }
 
-    Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    if (STUCharacter->IsPlayerControlled())
+    {
+        APlayerController *Controller = GetPlayerController();
+
+        if (!Controller)
+        {
+            return false;
+        }
+
+        Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    }
+    else
+    {
+        ViewLocation = GetMuzzleLocation();
+        ViewRotation = WeaponMeshComponent->GetSocketRotation(MuzzleSocketName);
+    }
 
     return true;
 }
@@ -81,7 +93,7 @@ bool ASTUBaseWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
         return false;
     }
 
-    const FVector ShootDirection =ViewRotation.Vector();
+    const FVector ShootDirection = ViewRotation.Vector();
     TraceStart = ViewLocation; // SocketTransform.GetLocation();
     TraceEnd = TraceStart + ShootDirection * TraceDistance;
     return true;
@@ -94,7 +106,7 @@ void ASTUBaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, c
     CollisionParams.AddIgnoredActor(GetOwner());
     CollisionParams.bReturnPhysicalMaterial = true;
 
-    //DrawDebugLine(GetWorld(), GetMuzzleLocation(), TraceEnd, FColor::Red, false, 3.f, 0, 3.f);
+    // DrawDebugLine(GetWorld(), GetMuzzleLocation(), TraceEnd, FColor::Red, false, 3.f, 0, 3.f);
     GetWorld()->LineTraceSingleByChannel(HitResult, GetMuzzleLocation(), TraceEnd, ECollisionChannel::ECC_Visibility,
                                          CollisionParams);
 }
@@ -139,6 +151,7 @@ void ASTUBaseWeapon::LogAmmo()
 
 UNiagaraComponent *ASTUBaseWeapon::SpawnMuzzleFX()
 {
-    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MuzzleSocketName, FVector::ZeroVector,
-                                                 FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
+    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MuzzleSocketName,
+                                                        FVector::ZeroVector, FRotator::ZeroRotator,
+                                                        EAttachLocation::SnapToTarget, true);
 }

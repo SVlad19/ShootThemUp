@@ -52,6 +52,7 @@ void USTUWeaponComponent::SwapWeapon(const FInputActionValue &Value)
     {
         return;
     }
+
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
     EquipWeapon(CurrentWeaponIndex);
 }

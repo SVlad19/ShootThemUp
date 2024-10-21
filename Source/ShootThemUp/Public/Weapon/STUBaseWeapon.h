@@ -39,10 +39,14 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
         return CurrentAmmo;
     }
 
+    FORCEINLINE bool IsAmmoEmpty() const
+    {
+        return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && CurrentAmmo.Bullets == 0;
+    }
+
     FOnClipEmptySignature OnClipEmpty;
 
   protected:
-
     virtual void BeginPlay() override;
 
     virtual void MakeShot();
@@ -56,10 +60,6 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 
     void DecreaseAmmo();
 
-    FORCEINLINE bool IsAmmoEmpty() const
-    {
-        return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && CurrentAmmo.Bullets == 0;
-    }
     FORCEINLINE bool IsClipEmpty() const
     {
         return CurrentAmmo.Bullets == 0;

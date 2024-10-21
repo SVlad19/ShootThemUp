@@ -24,6 +24,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning() const;
+
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
 
@@ -33,20 +34,6 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
   protected:
-    virtual void BeginPlay() override;
-
-    UFUNCTION()
-    void Move(const FInputActionValue &Value);
-
-    UFUNCTION()
-    void Look(const FInputActionValue &Value);
-
-    UFUNCTION()
-    void Jumping(const FInputActionValue &Value);
-
-    UFUNCTION()
-    void Sprint(const FInputActionValue &Value);
-
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -77,8 +64,23 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     FVector2D LandedDamage = FVector2D(10.f, 100.f);
 
+    virtual void BeginPlay() override;
+
+    UFUNCTION()
+    void Move(const FInputActionValue &Value);
+
+    UFUNCTION()
+    void Look(const FInputActionValue &Value);
+
+    UFUNCTION()
+    void Jumping(const FInputActionValue &Value);
+
+    UFUNCTION()
+    void Sprint(const FInputActionValue &Value);
+
+    virtual void OnDeath();
+
   private:
-    void OnDeath();
     void OnHealthChanged(float Health, float HealthDelta);
 
     UFUNCTION()
