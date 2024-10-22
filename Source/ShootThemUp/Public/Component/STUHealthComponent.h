@@ -38,6 +38,8 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
         return (Health / MaxHealth);
     }
 
+    bool TryToAddHP(float HPAmount);
+
     FOnDeath OnDeath;
     FOnHealthChanged OnHealthChanged;
 

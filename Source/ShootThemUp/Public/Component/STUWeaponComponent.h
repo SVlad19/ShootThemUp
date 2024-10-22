@@ -28,6 +28,8 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
     bool GetWeaponUIData(FWeaponUIData &UIData) const;
     bool GetWeaponAmmoData(FAmmoData &AmmoData) const;
 
+    bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, int32 ClipsAmount);
+
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;
@@ -85,6 +87,6 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
         return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress && CurrentWeapon->CanReload();
     }
 
-    void OnEmptyClip();
+    void OnEmptyClip(ASTUBaseWeapon* AmmoEmptyWeapon);
     void ChangeClip();
 };

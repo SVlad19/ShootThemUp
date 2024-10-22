@@ -103,3 +103,15 @@ void USTUHealthComponent::OnTakeAnyDamageHandle(AActor *DamagedActor, float Dama
     //     }
     // }
 }
+
+bool USTUHealthComponent::TryToAddHP(float HPAmount)
+{
+    if (Health == MaxHealth || IsDead())
+    {
+        return false;
+    }
+
+    SetHealth(Health + HPAmount);
+
+    return true;
+}

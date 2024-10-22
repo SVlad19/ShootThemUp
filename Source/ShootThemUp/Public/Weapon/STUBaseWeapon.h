@@ -7,6 +7,7 @@
 #include "STUCoreTypes.h"
 #include "STUBaseWeapon.generated.h"
 
+
 class USkeletalMeshComponent;
 class UNiagaraSystem;
 class UNiagaraComponent;
@@ -44,6 +45,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
         return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && CurrentAmmo.Bullets == 0;
     }
 
+    bool TryToAddAmmo(int32 ClipsAmount);
+
     FOnClipEmptySignature OnClipEmpty;
 
   protected:
@@ -63,6 +66,11 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     FORCEINLINE bool IsClipEmpty() const
     {
         return CurrentAmmo.Bullets == 0;
+    }
+
+    FORCEINLINE bool IsAmmoFull() const
+    {
+        return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;
     }
 
     void LogAmmo();
