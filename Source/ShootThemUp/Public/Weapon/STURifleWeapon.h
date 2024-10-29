@@ -55,4 +55,6 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
     void InitMuzzleFX();
     void SetMuzzleFXVisivility(bool Visible);
     void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
+
+    AController *GetControlller() const;
 };

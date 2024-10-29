@@ -68,17 +68,6 @@ void ASTUBaseWeapon::BeginPlay()
     CurrentAmmo = DefaultAmmo;
 }
 
-APlayerController *ASTUBaseWeapon::GetPlayerController() const
-{
-    const auto Player = Cast<ACharacter>(GetOwner());
-    if (!Player)
-    {
-        return nullptr;
-    }
-
-    return Player->GetController<APlayerController>();
-}
-
 bool ASTUBaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const
 {
     const auto STUCharacter = Cast<ACharacter>(GetOwner());
@@ -89,7 +78,7 @@ bool ASTUBaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRot
 
     if (STUCharacter->IsPlayerControlled())
     {
-        APlayerController *Controller = GetPlayerController();
+        APlayerController *Controller = STUCharacter->GetController<APlayerController>();
 
         if (!Controller)
         {

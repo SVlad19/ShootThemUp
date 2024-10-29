@@ -16,6 +16,8 @@ class SHOOTTHEMUP_API ASTUBasePickup : public AActor
   public:
     ASTUBasePickup();
 
+    bool CouldBeTaken()const;
+
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pickup")
     TObjectPtr<USphereComponent> CollisionComponent;
@@ -31,6 +33,7 @@ class SHOOTTHEMUP_API ASTUBasePickup : public AActor
 
   private:
     float RotationYaw = 0.f;
+    FTimerHandle RespawnTimerHandle;
 
     virtual bool GivePickupTo(APawn *PlayerPawn);
     void PickapWasTaken();

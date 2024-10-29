@@ -27,11 +27,14 @@ class SHOOTTHEMUP_API UInputDataConfig : public UDataAsset
     UInputAction *SprintInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *FireInput;   
-    
+    UInputAction *FireInput;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputAction *SwapInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputAction *ReloadInput;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    UInputAction *PauseGameInput;
 };

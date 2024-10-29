@@ -7,7 +7,6 @@
 #include "STUCoreTypes.h"
 #include "STUPlayerHUDWidget.generated.h"
 
-
 UCLASS()
 class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget
 {
@@ -34,6 +33,7 @@ class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget
 
     virtual bool Initialize() override;
 
-private:
-    void OnHealthChanged(float Health,float HealthDelta);
+  private:
+    void OnHealthChanged(float Health, float HealthDelta);
+    void OnNewPawn(APawn *Pawn);
 };

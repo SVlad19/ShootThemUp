@@ -7,7 +7,6 @@
 #include "STUCoreTypes.h"
 #include "STUBaseWeapon.generated.h"
 
-
 class USkeletalMeshComponent;
 class UNiagaraSystem;
 class UNiagaraComponent;
@@ -45,6 +44,11 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
         return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && CurrentAmmo.Bullets == 0;
     }
 
+    FORCEINLINE bool IsAmmoFull() const
+    {
+        return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;
+    }
+
     bool TryToAddAmmo(int32 ClipsAmount);
 
     FOnClipEmptySignature OnClipEmpty;
@@ -55,8 +59,6 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     virtual void MakeShot();
     virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const;
 
-    APlayerController *GetPlayerController() const;
-
     bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
     FVector GetMuzzleLocation() const;
     void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
@@ -66,11 +68,6 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
     FORCEINLINE bool IsClipEmpty() const
     {
         return CurrentAmmo.Bullets == 0;
-    }
-
-    FORCEINLINE bool IsAmmoFull() const
-    {
-        return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;
     }
 
     void LogAmmo();

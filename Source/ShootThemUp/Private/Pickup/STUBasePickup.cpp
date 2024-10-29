@@ -18,6 +18,11 @@ ASTUBasePickup::ASTUBasePickup()
     SetRootComponent(CollisionComponent);
 }
 
+bool ASTUBasePickup::CouldBeTaken() const
+{
+    return !GetWorldTimerManager().IsTimerActive(RespawnTimerHandle);
+}
+
 void ASTUBasePickup::BeginPlay()
 {
     Super::BeginPlay();
@@ -55,7 +60,6 @@ void ASTUBasePickup::PickapWasTaken()
     CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     GetRootComponent()->SetVisibility(false, true);
 
-    FTimerHandle RespawnTimerHandle;
     GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &ASTUBasePickup::Respawn, RespawnTime);
 }
 

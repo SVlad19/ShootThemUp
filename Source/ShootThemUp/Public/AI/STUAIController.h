@@ -7,6 +7,7 @@
 #include "STUAIController.generated.h"
 
 class USTUAIPerceptionComponent;
+class USTURespawnComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUAIController : public AAIController
@@ -20,7 +21,10 @@ class SHOOTTHEMUP_API ASTUAIController : public AAIController
     virtual void OnPossess(APawn *InPawn) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    TObjectPtr<USTUAIPerceptionComponent> STUAIPerceptionComponent;
+    TObjectPtr<USTUAIPerceptionComponent> STUAIPerceptionComponent;   
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    TObjectPtr<USTURespawnComponent> STURespawnComponent;
 
      UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
     FName FocusOnKeyName = "EnemyActor";

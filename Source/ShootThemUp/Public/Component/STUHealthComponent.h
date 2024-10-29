@@ -73,4 +73,6 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
 
     void SetHealth(float NewHealth);
     void PlayCameraShake();
+
+    void Killed(AController *KillerController);
 };

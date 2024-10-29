@@ -1,15 +1,19 @@
 // Shoot Them Up Game. All Rights Reserved.
 
-
 #include "AI/STUAIController.h"
 #include "AI/STUAIBaseCharacter.h"
-#include "Component/STUAIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Component/STUAIPerceptionComponent.h"
+#include "Component/STURespawnComponent.h"
 
 ASTUAIController::ASTUAIController()
 {
     STUAIPerceptionComponent = CreateDefaultSubobject<USTUAIPerceptionComponent>(TEXT("STUAIPerceptionComponent"));
     SetPerceptionComponent(*STUAIPerceptionComponent);
+
+    STURespawnComponent = CreateDefaultSubobject<USTURespawnComponent>(TEXT("STURespawnComponent"));
+
+    bWantsPlayerState = true;
 }
 
 void ASTUAIController::OnPossess(APawn *InPawn)
