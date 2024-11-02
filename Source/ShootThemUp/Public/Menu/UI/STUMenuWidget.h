@@ -7,11 +7,11 @@
 #include "UI/STUBaseWidget.h"
 #include "STUMenuWidget.generated.h"
 
-
 class UButton;
 class UHorizontalBox;
 class USTUGameInstance;
 class USTULevelItemWidget;
+class USoundCue;
 
 UCLASS()
 class SHOOTTHEMUP_API USTUMenuWidget : public USTUBaseWidget
@@ -33,6 +33,9 @@ class SHOOTTHEMUP_API USTUMenuWidget : public USTUBaseWidget
 
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     TObjectPtr<UWidgetAnimation> HideAnimation;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    TObjectPtr<USoundCue> StartGameSound;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> LevelItemWidgetClass;

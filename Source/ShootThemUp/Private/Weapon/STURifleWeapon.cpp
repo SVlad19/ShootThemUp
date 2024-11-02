@@ -1,13 +1,15 @@
 // Shoot Them Up Game. All Rights Reserved.
 
-
 #include "Weapon/STURifleWeapon.h"
 #include "DrawDebugHelpers.h"
-#include "Engine/World.h"
 #include "Engine/DamageEvents.h"
-#include "Weapon/Component/STUWeaponFXComponent.h"
+#include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Sound/SoundCue.h"
+#include "Weapon/Component/STUWeaponFXComponent.h"
+#include "Components/AudioComponent.h"
 
 ASTURifleWeapon::ASTURifleWeapon()
 {
@@ -23,7 +25,7 @@ void ASTURifleWeapon::BeginPlay()
 
 void ASTURifleWeapon::StartFire()
 {
-    InitMuzzleFX();
+    InitFX();
     GetWorld()->GetTimerManager().SetTimer(ShootTimerHandle, this, &ASTURifleWeapon::MakeShot, TimeBetweenShots, true);
     MakeShot();
 }
@@ -31,7 +33,7 @@ void ASTURifleWeapon::StartFire()
 void ASTURifleWeapon::StopFire()
 {
     GetWorld()->GetTimerManager().ClearTimer(ShootTimerHandle);
-    SetMuzzleFXVisivility(false);
+    SetFXActive(false);
 }
 
 void ASTURifleWeapon::MakeShot()
@@ -95,22 +97,32 @@ void ASTURifleWeapon::MakeDamage(const FHitResult &HitResult)
     Enemy->TakeDamage(Damage, FDamageEvent{}, GetControlller(), this);
 }
 
-void ASTURifleWeapon::InitMuzzleFX()
+void ASTURifleWeapon::InitFX()
 {
     if (!MuzzleFXComponent.IsValid())
     {
         MuzzleFXComponent = SpawnMuzzleFX();
     }
 
-    SetMuzzleFXVisivility(true);
+    if (!FireAudioComponent)
+    {
+        FireAudioComponent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMeshComponent, MuzzleSocketName);
+    }
+
+    SetFXActive(true);
 }
 
-void ASTURifleWeapon::SetMuzzleFXVisivility(bool Visible)
+void ASTURifleWeapon::SetFXActive(bool IsActive)
 {
     if (MuzzleFXComponent.IsValid())
     {
-        MuzzleFXComponent->SetPaused(!Visible);
-        MuzzleFXComponent->SetVisibility(Visible, true);
+        MuzzleFXComponent->SetPaused(!IsActive);
+        MuzzleFXComponent->SetVisibility(IsActive, true);
+    }
+
+    if (FireAudioComponent)
+    {
+        IsActive ? FireAudioComponent->Play() : FireAudioComponent->Stop();
     }
 }
 
@@ -126,6 +138,6 @@ void ASTURifleWeapon::SpawnTraceFX(const FVector &TraceStart, const FVector &Tra
 AController *ASTURifleWeapon::GetControlller() const
 {
     const auto Pawn = Cast<APawn>(GetOwner());
-    
+
     return Pawn ? Pawn->GetController() : nullptr;
 }

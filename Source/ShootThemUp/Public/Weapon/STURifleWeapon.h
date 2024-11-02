@@ -10,6 +10,7 @@
 class USTUWeaponFXComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
+class UAudioComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
@@ -40,7 +41,7 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trace")
     TObjectPtr<UNiagaraSystem>TraceFX;
 
-        UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trace")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trace")
     FString TraceTargetName = "TraceTarget";
 
     UPROPERTY(VisibleAnywhere, Category = "VFX")
@@ -52,8 +53,11 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
     UPROPERTY()
     TWeakObjectPtr<UNiagaraComponent> MuzzleFXComponent;
 
-    void InitMuzzleFX();
-    void SetMuzzleFXVisivility(bool Visible);
+    UPROPERTY()
+    UAudioComponent *FireAudioComponent;
+
+    void InitFX();
+    void SetFXActive(bool IsActive);
     void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
 
     AController *GetControlller() const;

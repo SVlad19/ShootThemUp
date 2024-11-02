@@ -7,6 +7,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Menu/UI/STULevelItemWidget.h"
 #include "STUGameInstance.h"
+#include "Sound/SoundCue.h"
 
 void USTUMenuWidget::NativeOnInitialized()
 {
@@ -44,6 +45,7 @@ void USTUMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation *
 void USTUMenuWidget::OnStartGame()
 {
     PlayAnimation(HideAnimation);
+    UGameplayStatics::PlaySound2D(GetWorld(), StartGameSound);
 }
 
 void USTUMenuWidget::OnQuitGame()
