@@ -31,6 +31,10 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
     bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, int32 ClipsAmount);
 
     bool NeedAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType)const;
+
+    void ZoomInput(const FInputActionValue &Value);
+    void Zoom(bool Enabled);
+
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;

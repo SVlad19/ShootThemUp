@@ -26,6 +26,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
 
     virtual void Tick(float DeltaTime) override;
 
+    virtual void TurnOff() override;
+    virtual void Reset() override;
+
     void SetPlayerColor(const FLinearColor &Color);
 
   protected:

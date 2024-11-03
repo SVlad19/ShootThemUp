@@ -36,6 +36,18 @@ void ASTURifleWeapon::StopFire()
     SetFXActive(false);
 }
 
+void ASTURifleWeapon::Zoom(bool Enabled)
+{
+    const auto Controller = Cast<APlayerController>(GetController());
+    if (!Controller || !Controller->PlayerCameraManager)
+    {
+        return;
+    }
+
+    Controller->PlayerCameraManager->SetFOV(Enabled ? FOV.GetLowerBoundValue() : FOV.GetUpperBoundValue());
+
+}
+
 void ASTURifleWeapon::MakeShot()
 {
     if (!GetWorld() || IsAmmoEmpty())
@@ -94,7 +106,10 @@ void ASTURifleWeapon::MakeDamage(const FHitResult &HitResult)
         return;
     }
 
-    Enemy->TakeDamage(Damage, FDamageEvent{}, GetControlller(), this);
+    FPointDamageEvent PointDamageEvent;
+    PointDamageEvent.HitInfo = HitResult;
+
+    Enemy->TakeDamage(Damage, PointDamageEvent, GetController(), this);
 }
 
 void ASTURifleWeapon::InitFX()
@@ -135,7 +150,7 @@ void ASTURifleWeapon::SpawnTraceFX(const FVector &TraceStart, const FVector &Tra
     }
 }
 
-AController *ASTURifleWeapon::GetControlller() const
+AController *ASTURifleWeapon::GetController() const
 {
     const auto Pawn = Cast<APawn>(GetOwner());
 

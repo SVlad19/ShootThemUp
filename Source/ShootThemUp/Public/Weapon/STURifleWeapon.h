@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "Weapon/STUBaseWeapon.h"
 #include "STURifleWeapon.generated.h"
 
@@ -23,6 +22,7 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
     virtual void BeginPlay() override;
     void StartFire() override;
     void StopFire() override;
+    virtual void Zoom(bool Enabled) override;
 
   protected:
     virtual void MakeShot() override;
@@ -36,13 +36,16 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
     float BulletSpread = 1.5f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trace")
-    float Damage = 10.f;   
+    float Damage = 10.f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trace")
-    TObjectPtr<UNiagaraSystem>TraceFX;
+    TObjectPtr<UNiagaraSystem> TraceFX;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trace")
     FString TraceTargetName = "TraceTarget";
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom")
+    FFloatRange FOV = FFloatRange(50.0f, 90.0f);
 
     UPROPERTY(VisibleAnywhere, Category = "VFX")
     TObjectPtr<USTUWeaponFXComponent> WeaponFXComponent;
@@ -60,5 +63,5 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
     void SetFXActive(bool IsActive);
     void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
 
-    AController *GetControlller() const;
+    AController *GetController() const;
 };

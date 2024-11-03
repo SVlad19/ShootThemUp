@@ -81,7 +81,9 @@ void ASTUPlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInput
         Input->BindAction(InputActions->SwapInput, ETriggerEvent::Triggered, WeaponComponent.Get(),
                           &USTUWeaponComponent::SwapWeapon);
         Input->BindAction(InputActions->ReloadInput, ETriggerEvent::Triggered, WeaponComponent.Get(),
-                          &USTUWeaponComponent::Reload);  
+                          &USTUWeaponComponent::Reload);   
+        Input->BindAction(InputActions->ZoomInput, ETriggerEvent::Triggered, WeaponComponent.Get(),
+                          &USTUWeaponComponent::ZoomInput);  
     }
 }
 

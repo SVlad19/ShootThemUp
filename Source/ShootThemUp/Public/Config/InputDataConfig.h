@@ -15,26 +15,29 @@ class SHOOTTHEMUP_API UInputDataConfig : public UDataAsset
 
   public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *MoveInput;
+    TObjectPtr<UInputAction> MoveInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *LookInput;
+    TObjectPtr<UInputAction> LookInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *JumpInput;
+    TObjectPtr<UInputAction> JumpInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *SprintInput;
+    TObjectPtr<UInputAction> SprintInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *FireInput;
+    TObjectPtr<UInputAction> FireInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *SwapInput;
+    TObjectPtr<UInputAction> SwapInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *ReloadInput;
+    TObjectPtr<UInputAction> ReloadInput;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction *PauseGameInput;
+    TObjectPtr<UInputAction> PauseGameInput;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    TObjectPtr<UInputAction> ZoomInput;
 };

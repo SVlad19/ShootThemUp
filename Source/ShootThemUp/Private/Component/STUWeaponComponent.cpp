@@ -62,7 +62,7 @@ void USTUWeaponComponent::Reload(const FInputActionValue &Value)
     ChangeClip();
 }
 
-bool USTUWeaponComponent::GetWeaponUIData(FWeaponUIData& UIData)const
+bool USTUWeaponComponent::GetWeaponUIData(FWeaponUIData &UIData) const
 {
     if (CurrentWeapon)
     {
@@ -108,6 +108,21 @@ bool USTUWeaponComponent::NeedAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType) const
     }
 
     return false;
+}
+
+void USTUWeaponComponent::ZoomInput(const FInputActionValue &Value)
+{
+    bool Enabled = Value.Get<bool>();
+
+    Zoom(Enabled);
+}
+
+void USTUWeaponComponent::Zoom(bool Enabled)
+{
+    if (CurrentWeapon)
+    {
+        CurrentWeapon->Zoom(Enabled);
+    }
 }
 
 void USTUWeaponComponent::BeginPlay()
@@ -182,6 +197,7 @@ void USTUWeaponComponent::EquipWeapon(int32 WeaponIndex)
 
     if (CurrentWeapon)
     {
+        CurrentWeapon->Zoom(false);
         CurrentWeapon->StopFire();
         AttachWeaponToSocket(CurrentWeapon, Owner->GetMesh(), WeaponArmorySocketName);
     }
@@ -282,7 +298,6 @@ void USTUWeaponComponent::OnEmptyClip(ASTUBaseWeapon *AmmoEmptyWeapon)
             }
         }
     }
-    
 }
 
 void USTUWeaponComponent::ChangeClip()

@@ -22,6 +22,7 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 
     virtual void StartFire();
     virtual void StopFire();
+    virtual void Zoom(bool Enabled);
 
     void ChangeClip();
 

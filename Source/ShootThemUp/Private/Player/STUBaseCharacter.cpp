@@ -63,6 +63,22 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
+void ASTUBaseCharacter::TurnOff()
+{
+    WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
+
+    Super::TurnOff();
+}
+
+void ASTUBaseCharacter::Reset()
+{
+    WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
+
+    Super::Reset();
+}
+
 void ASTUBaseCharacter::SetPlayerColor(const FLinearColor &Color)
 {
     const auto MaterialInstance = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
@@ -84,6 +100,7 @@ void ASTUBaseCharacter::OnDeath()
     SetLifeSpan(5.f);
 
     WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
 
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);

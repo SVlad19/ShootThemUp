@@ -8,6 +8,7 @@
 #include "STUHealthComponent.generated.h"
 
 class UCameraShakeBase;
+class UPhysicalMaterial;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
@@ -21,10 +22,6 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
     {
         return Health;
     }
-
-    UFUNCTION()
-    void OnTakeAnyDamageHandle(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
-                               class AController *InstigatedBy, AActor *DamageCauser);
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     FORCEINLINE bool IsDead() const
@@ -57,16 +54,28 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
     float HealDelay = 3.f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
-    float HealModifier = 1.f;   
-    
+    float HealModifier = 1.f;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
     TSubclassOf<UCameraShakeBase> CameraShake;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+    TMap<UPhysicalMaterial*, float> DamageModifiers;
 
     virtual void BeginPlay() override;
 
   private:
     UFUNCTION()
     void HealUpdate();
+
+    UFUNCTION()
+    void OnTakePointDamage(AActor *DamagedActor, float Damage, class AController *InstigatedBy, FVector HitLocation,
+                           class UPrimitiveComponent *FHitComponent, FName BoneName, FVector ShotFromDirection,
+                           const class UDamageType *DamageType, AActor *DamageCauser);
+
+    UFUNCTION()
+    void OnTakeRadialDamage(AActor *DamagedActor, float Damage, const class UDamageType *DamageType, FVector Origin,
+                            const FHitResult &HitInfo, class AController *InstigatedBy, AActor *DamageCauser);
 
     float Health = 0.f;
     FTimerHandle HealTimer;
@@ -75,4 +84,8 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
     void PlayCameraShake();
 
     void Killed(AController *KillerController);
+    void ApplyDamage(float Damage, AController *InstigatedBy);
+    float GetPointDamageModifier(AActor *DamagedActor, const FName &BoneName);
+
+    void ReportDamageEvent(float Damage, AController* InstigatedBy);
 };
